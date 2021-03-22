@@ -1,0 +1,198 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+    <h:head>
+   		 LIBRAIRIE
+    </h:head>
+    
+	<br/>
+	<br/>
+	
+	<h:body style="color: #C5E1A5; opacity:0.8 ;background-image: url(https://c.pxhere.com/photos/51/6b/dark_gloomy_books_pages_paper_read_book_bound-1061076.jpg!d); background-repeat: repeat; background-size: 100%;">
+			<f:view>
+				<h:form id="form">
+								   
+					<span class="ui-float-label">
+				       <p:inputText id="Recherche" value="#{produitBean.recherche}"  />
+				       <p:outputLabel for="@previous" value="Recherche"/>
+				       <h:commandButton action="#{produitBean.filtrer}" icon="pi pi-search" value="Rechercher" style="margin-left: 5px ; background-color: #C5E1A5"/>
+				    <h:outputText 
+		        		value="Aucun produit trouvé" rendered="#{empty produitBean.produitList}" style="margin-left: 10px" >				
+					</h:outputText> 
+					</span>
+					
+					<p:commandLink update=":form:panier" oncomplete="PF('panierDialog').show()" title="Accéder au panier">
+		                <h:outputText styleClass="ui-icon pi pi-shopping-cart" style="margin:0 auto; font-size: 4rem; float: right"/>
+		                <f:setPropertyActionListener value="#{panier}" target="#{produitBean.basket}" />
+			        </p:commandLink> 
+			      	<br/>
+		   			<h:outputText 
+		        		value="Total : #{produitBean.total} &#8364;" style="float: right" rendered="#{not empty produitBean.basket}" >				
+					</h:outputText>	
+		  							
+					<h:panelGrid columns="1" style="width:125px ">
+			        <p:outputLabel for="@next" />
+			        <p:selectOneMenu id="categorie" value="#{produitBean.categorie}" style="width:125px">
+			            <f:selectItem itemValue="0" itemLabel="Categorie" />
+					   	<f:selectItem itemValue="1" itemLabel="Roman" />
+					   	<f:selectItem itemValue="2" itemLabel="Informatique" />
+					   	<f:selectItem itemValue="3" itemLabel="Manga" />
+			            <f:facet name="footer">
+			            </f:facet>
+			        </p:selectOneMenu>
+			        </h:panelGrid>
+			        
+			       <h5>Prix</h5>
+			        <h:panelGrid columns="1" style="margin-bottom: 10px">
+			            <h:outputText id="displayRange" value="Entre #{produitBean.min} et #{produitBean.max} €"/>
+			            <p:slider for="min,max" display="displayRange" style="width: 400px" range="true"
+			                      displayTemplate="Entre {min} and {max} €"/>
+			        </h:panelGrid>
+			        <h:inputHidden id="min" value="#{produitBean.min}"/>
+			        <h:inputHidden id="max" value="#{produitBean.max}"/> 
+			        
+					<br/>
+					<br/>
+				 	<h:outputText 
+		        		value="#{produitBean.produitListSize}" style="font-weight: bold" rendered="#{not empty produitBean.produitList}">				
+					</h:outputText>	
+					<h:outputText 
+		        		value=" produits correspondants" rendered="#{not empty produitBean.produitList}">				
+					</h:outputText>
+		
+				<p:dataView var="produit" value="#{produitBean.produitList}" rendered="#{not empty produitBean.produitList}" 
+			                gridIcon="pi pi-th-large" listIcon="pi pi-bars"
+			                rows="10" paginator="true" rowsPerPageTemplate="5,10,15" paginatorAlwaysVisible="false"
+		                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+			 
+			        <p:dataViewGridItem>
+			            <p:panel header="#{produit.nom}" style="text-align:center">
+			                <h:panelGrid columns="1" style="width:100%" >
+			                    <p:graphicImage value="#{produit.url_image}" width="360"/> 
+			                    
+			                    <h:outputText value="Prix" />
+			                    <h:outputText value="#{produit.prix_actuel} &#8364;" style="font-weight: bold"/>
+			                    
+			                    <h:outputText value="Description" />
+			                    <h:outputText value="#{produit.description.substring(0, 30)}..." style="font-weight: bold"/>
+		 				
+			                    <p:commandLink update=":form:produitDetail" oncomplete="PF('produitDialog').show()" title="View Detail">
+			                        <h:outputText styleClass="ui-icon pi pi-search-plus" style="margin:0 auto;" />
+			                        <f:setPropertyActionListener value="#{produit}" target="#{produitBean.selectedProduit}" />
+			                    </p:commandLink>
+			                    
+			                </h:panelGrid>
+			            </p:panel>
+			        </p:dataViewGridItem>
+			 
+			        <p:dataViewListItem>
+			            <h:panelGrid columns="3" style="width:100%" columnClasses="logo,detail">
+			                <p:graphicImage value="#{produit.url_image}" width="100"/> 
+			                <p:outputPanel>
+			                    <h:panelGrid columns="2" cellpadding="5">
+			                        <h:outputText value="Nom" />
+			                        <h:outputText value="#{produit.nom}" style="font-weight: bold"/>
+			 
+									<h:outputText value="Description" />
+			                        <h:outputText value="#{produit.description.substring(0, 30)}..." style="font-weight: bold"/>
+			                        
+			                        <h:outputText value="Prix" />
+			                        <h:outputText value="#{produit.prix_actuel} &#8364;" style="font-weight: bold"/>
+			                        
+			                        <h:outputText value="Quantite dispo" />
+			           			    <h:outputText value="#{produit.quantite}" />
+			           			    	           			    
+			                    </h:panelGrid>
+			                </p:outputPanel>
+			   	 
+		 	                <p:commandLink update=":form:produitDetail" oncomplete="PF('produitDialog').show()" title="View Detail">
+			                    <h:outputText styleClass="ui-icon pi pi-search-plus" style="margin:0 auto;font-size: 2rem"/>
+			                    <f:setPropertyActionListener value="#{produit}" target="#{produitBean.selectedProduit}" />
+			                </p:commandLink> 
+			            </h:panelGrid>
+			        </p:dataViewListItem>
+			    </p:dataView> 
+			 
+			     <p:dialog header="Produit Info" widgetVar="produitDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="True">
+			        <p:outputPanel id="produitDetail" style="text-align:center;">
+			            <p:panelGrid  columns="2" columnClasses="label,value">
+			                <f:facet name="header">
+			                    <p:graphicImage value="#{produitBean.selectedProduit.url_image}" width="150"/> 
+			                </f:facet>
+			 
+			                <h:outputText value="Nom" />
+			                <h:outputText value="#{produitBean.selectedProduit.nom}" />
+			 
+			                <h:outputText value="Description" />
+			                <h:outputText value="#{produitBean.selectedProduit.description}"/>
+			                
+			                <h:outputText value="Prix" />
+			                <h:outputText value="#{produitBean.selectedProduit.prix_actuel} &#8364;"/>
+			 
+			               	<h:outputText value="Quantite dispo" />
+			                <h:outputText value="#{produitBean.selectedProduit.quantite}" />
+					                
+					        <h:outputText value="Indisponible" rendered="#{produitBean.selectedProduit.quantite ==0}" />	
+			                <h:commandButton 
+				               	value="Ajouter au panier" style="background-color:#C5E1A5"
+								actionListener="#{produitBean.processAddAction}" rendered="#{produitBean.selectedProduit.quantite !=0}" /> 
+								
+			            </p:panelGrid>
+			        </p:outputPanel>
+				</p:dialog>  
+				
+				 <p:dialog header="Panier" widgetVar="panierDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+					 <p:outputPanel id="panier" style="text-align:center">
+					 
+					 	<h:outputText 
+		        		value="#{produitBean.basketSize}" rendered="#{not empty produitBean.basket}">				
+						</h:outputText>
+		       			<h:outputText 
+		        		value="article(s) dans le panier" rendered="#{not empty produitBean.basket}">				
+						</h:outputText>
+		                <h:dataTable value="#{produitBean.basket}" var="panier"  rendered="#{not empty produitBean.basket}"
+							 style="width: 100%; margin: auto;">
+							<h:column>
+			                    <p:graphicImage value="#{panier.produit.url_image}" width="50"/> 
+			                </h:column>
+					 		<h:column>
+					 			<f:facet name="header">Nom</f:facet>
+					 			#{panier.produit.nom}
+					 		</h:column>
+					 		<h:column>
+					 			<f:facet name="header">Prix Unitaire</f:facet>
+					 			#{panier.produit.prix_actuel} &#8364;
+					 		</h:column>
+					 		<h:column>
+					 			<f:facet name="header">Quantite</f:facet>
+					 			#{panier.quantity}
+					 		</h:column>
+					 		<h:column>
+						 		<p:outputLabel for="@next" value="Quantite"/>
+                				<p:spinner id="minMax" min="0" max="#{panier.produit.quantite}" size="1" 
+								           value="#{panier.quantity}">
+								    <p:ajax listener="#{produitBean.refreshPanier()}" oncomplete="PF('panierDialog').show()"
+								            update="@form" process="@this" />
+								</p:spinner>
+               				</h:column>	
+				 		</h:dataTable>
+				 		<br/>
+				 		<br/>	
+					<h:outputText 
+		        		value="Votre panier est vide" rendered="#{empty produitBean.basket}">				
+					</h:outputText>
+		       		<h:outputText 
+		        		value="Total " rendered="#{not empty produitBean.basket}">				
+					</h:outputText>
+		       		<h:outputText 
+		        		value="#{produitBean.total} &#8364;" rendered="#{not empty produitBean.basket}">				
+					</h:outputText>
+					</p:outputPanel>
+			    </p:dialog>   
+				
+			</h:form>
+		</f:view>
+	</h:body>
+</html>
